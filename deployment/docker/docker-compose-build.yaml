@@ -1,0 +1,18 @@
+version: "3"
+services:
+  reverseproxy:
+    build:
+      context: .
+    image: srivathsan930v/reverseproxy
+  backend_user:
+    build:
+      context: ../../udagram-restapi-user
+    image: srivathsan930v/udagram-restapi-user
+  backend_feed:
+    build:
+      context: ../../udagram-restapi-feed
+    image: srivathsan930v/udagram-restapi-feed
+  frontend:
+    build:
+      context: ../../udagram-frontend
+    image: srivathsan930v/udagram-frontend:local
