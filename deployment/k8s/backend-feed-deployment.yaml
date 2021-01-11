@@ -1,38 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: backend-feed
   labels:
     service: backend-feed
-  name: backend-feed
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      service: backend-feed
   template:
     metadata:
       labels:
         service: backend-feed
     spec:
       containers:
-        - image: srivathsan930v/udagram-restapi-feed
-          name: backend-feed
+        - name: backend-feed
+          image: srivathsan930v/udagram-restapi-feed
           imagePullPolicy: Always
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "500m"
+              memory: "64Mi"
+              cpu: "250m"
             limits:
               memory: "1024Mi"
-              cpu: "768m"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15  # The kubelet will run the first liveness probe 15 seconds after the container starts.
+            periodSeconds: 20  # kubelet will continue to run this check every 20 seconds.
           env:
-            - name: URL
+            - name: AWS_MEDIA_BUCKET
               valueFrom:
                 configMapKeyRef:
                   name: env-config
-                  key: URL
-            - name: AWS_BUCKET
-              valueFrom:
-                configMapKeyRef:
-                  name: env-config
-                  key: AWS_BUCKET
+                  key: AWS_MEDIA_BUCKET
             - name: AWS_PROFILE
               valueFrom:
                 configMapKeyRef:
@@ -48,29 +54,29 @@ spec:
                 configMapKeyRef:
                   name: env-config
                   key: JWT_SECRET
-            - name: POSTGRESS_DB
+            - name: POSTGRES_DATABASE
               valueFrom:
                 configMapKeyRef:
                   name: env-config
-                  key: POSTGRESS_DB
-            - name: POSTGRESS_HOST
+                  key: POSTGRES_DATABASE
+            - name: POSTGRES_HOST
               valueFrom:
                 configMapKeyRef:
                   name: env-config
-                  key: POSTGRESS_HOST
-            - name: POSTGRESS_PASSWORD
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: env-secret
-                  key: POSTGRESS_PASSWORD
-            - name: POSTGRESS_USERNAME
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: env-secret
-                  key: POSTGRESS_USERNAME
+                  key: POSTGRES_USERNAME
           volumeMounts:
             - name: aws-secret
-              mountPath: "/root/.aws/"
+              mountPath: "/root/.aws/"  #aws config for local environment.
               readOnly: true
       restartPolicy: Always
       volumes:

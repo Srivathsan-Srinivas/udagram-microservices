@@ -6,9 +6,13 @@ metadata:
   name: frontend
 spec:
   replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
   template:
     metadata:
       labels:
+        app: frontend
         service: frontend
         api: external
     spec:
