@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  AWS_MEDIA_BUCKET: udagram-srini-dev
+  AWS_PROFILE: sriniuda
+  AWS_REGION: us-east-2
+  JWT_SECRET: hellothere
+  POSTGRES_DATABASE: udagramsrinidev
+  POSTGRES_HOST: udagramsrinidev.c2xphtt11ax0.us-east-2.rds.amazonaws.com
+  URL: http://localhost:8100
+metadata:
+  name: env-config
